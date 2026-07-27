@@ -1,2 +1,2 @@
 # NS-Cards
-Simple scripting tools for NS cards
+Simple java userscripts for nationstates.net cards
