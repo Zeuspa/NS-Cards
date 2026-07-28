@@ -7,7 +7,7 @@ bids and posts it in Discord.
 
 1. Run `pip install requests`
 
-2. Updated "ping_config.json" and fill in:
+2. Update "ping_config.json" and fill in:
    - `nation_name`: the user actually running this instance
    - `discord_webhook_url`: from your Discord channel's webhook
    
