@@ -6,7 +6,7 @@
 // @author       zeuspa
 // @license      MIT
 // @match        https://www.nationstates.net/*page=deck*
-// @downloadURL  
+// @downloadURL  https://github.com/Zeuspa/NS-Cards/blob/main/Steak%20Rarities%20(No%20GIFs%20%26%20Shiny%20Legs).js
 // @grant        none
 // ==/UserScript==
 
