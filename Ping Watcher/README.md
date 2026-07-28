@@ -8,7 +8,7 @@ bids and posts it in Discord.
 1. Run `pip install requests`
 
 2. Update "ping_config.json" and fill in:
-   - `nation_name`: the user actually running this instance
+   - `nation_name`: tells nationstates' API the user running the script 
    - `discord_webhook_url`: from your Discord channel's webhook
    
 3. Double-click `run_card_ping_watcher.bat` (Windows), or from a terminal:
