@@ -5,7 +5,7 @@ bids and posts it in Discord.
 
 ## Setup
 
-1. pip install requests
+1. Run 'pip install requests'
 
 2. Updated "ping_config.json" and fill in:
    - `nation_name`: the user actually running this instance
