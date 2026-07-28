@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name         Gardener (new logo) & Cardtel Highlighter
-// @version      1.2
+// @name         Gardener & Cardtel Highlighter (Old Logo)
+// @version      1.3
 // @namespace    dithpri.RCES
-// @description  Adds The Card Gardening Society's and The Cardtel's icons besides members and their puppets during auctions, works with main displayer script
+// @description  Adds The Card Gardening Society's and The Cardtel's icons besides members during auctions, with main-nation support & clean alignment.
 // @author       dithpri
 // @contributor  zeuspa
+// @contributor  arlizplot
 // @noframes
 // @match        https://www.nationstates.net/*page=deck*/*card=*
 // @match        https://www.nationstates.net/*card=*/*page=deck*
@@ -14,24 +15,6 @@
 // @connect      docs.google.com
 // @connect      googleusercontent.com
 // ==/UserScript==
-
-/*
- * Copyright (c) 2020 dithpri (Racoda) <dithpri@gmail.com>
- * This file is part of RCES: https://github.com/dithpri/RCES and licensed under
- * the MIT license. See LICENSE.md or
- * https://github.com/dithpri/RCES/blob/master/LICENSE.md for more details.
- *
- * Modified by zeuspa
- */
-
-/* Permissions:
- *
- * GM.xmlHttpRequest, `connect docs.google.com`, `connect googleusercontent.com`:
- *     to automatically fetch and update members' nations.
- *
- * GM.setValue, GM.getValue:
- *     to save and load members' nations locally.
- */
 
 (function () {
     "use strict";
@@ -54,7 +37,6 @@
             sheet_url: "https://docs.google.com/spreadsheets/d/1mqQRESG_HrMF6aToHqUF40eHNkLE6XbusoeZHFUMTKQ/export?format=tsv&id=1mqQRESG_HrMF6aToHqUF40eHNkLE6XbusoeZHFUMTKQ&gid=641340461",
             css_class: "rces-cl-cardgardens",
             icon_base64: gardener_icon_base64,
-            inset: 8,
         },
         {
             key: "cardtel",
@@ -62,7 +44,6 @@
             sheet_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vThf2cwCdk9k_NaKIlyu1cU_JDpWcEhdo-f8FqvvABiE2tpB7c9Ifbj7Ufb13XBt4t4E89ySQYzcGKm/pub?gid=0&single=true&output=tsv",
             css_class: "rces-cl-cardtel",
             icon_base64: cardtel_icon_base64,
-            inset: 32,
         },
     ];
 
@@ -94,26 +75,39 @@
             const cell = el.closest("td");
             if (!cell) return;
             const row = cell.parentNode;
-            const mainNation = resolveMainNation(cell);
+            const isLeft = (cell === row.firstElementChild);
 
-            // Create canonical name for matching (lowercase with underscores)
+            const mainNation = resolveMainNation(cell);
             const canonical_nname = mainNation
                 ? mainNation.toLowerCase().replace(/ /g, "_")
                 : el.getAttribute("href").replace(/^.*nation=/, "").toLowerCase();
 
+            // Ensure single flexbox container exists inside cell
+            let container = cell.querySelector(".rces-icon-container");
+            if (!container) {
+                container = document.createElement("span");
+                container.className = "rces-icon-container";
+                cell.appendChild(container);
+            }
+
+            if (isLeft) {
+                container.classList.add("rces-pos-left");
+                container.classList.remove("rces-pos-right");
+            } else {
+                container.classList.add("rces-pos-right");
+                container.classList.remove("rces-pos-left");
+            }
+
             orgs.forEach(function (org) {
-                const existing_icon = cell.querySelector(":scope > ." + org.css_class + "-icon");
+                let existing_icon = container.querySelector("." + org.css_class + "-icon");
+
                 if (members_by_org[org.key].includes(canonical_nname)) {
-                    cell.classList.add(org.css_class + "-cell");
-                    cell.classList.toggle(org.css_class + "-cell-left", cell === row.firstElementChild);
-                    cell.classList.toggle(org.css_class + "-cell-right", cell === row.lastElementChild);
                     if (!existing_icon) {
-                        const icon = document.createElement("span");
-                        icon.classList.add(org.css_class + "-icon");
-                        cell.appendChild(icon);
+                        existing_icon = document.createElement("span");
+                        existing_icon.classList.add("rces-org-icon", org.css_class + "-icon");
+                        container.appendChild(existing_icon);
                     }
                 } else {
-                    cell.classList.remove(org.css_class + "-cell", org.css_class + "-cell-left", org.css_class + "-cell-right");
                     if (existing_icon) existing_icon.remove();
                 }
             });
@@ -121,7 +115,6 @@
     };
 
     if (document.getElementById("auctiontablebox")) {
-        // Run update logic
         (async () => {
             for (const org of orgs) {
                 const lastUpdate = await GM.getValue(org.lastupdate_key, 0);
@@ -133,7 +126,7 @@
                             console.info("Updated members for: " + org.key);
                             const processedData = data.responseText
                                 .split("\n")
-                                .slice(1) // Skip header
+                                .slice(1)
                                 .map(line => {
                                     const parts = line.split("\t");
                                     return parts[1] ? parts[1].trim().toLowerCase().replace(/ /g, "_") : "";
@@ -165,24 +158,28 @@
         });
 
         GM_addStyle(`
-            .rces-cl-cardgardens-cell, .rces-cl-cardtel-cell { position: relative; }
-            .rces-cl-cardgardens-icon, .rces-cl-cardtel-icon {
+            #cardauctiontable td { position: relative; }
+            .rces-icon-container {
                 position: absolute;
                 top: 50%;
-                width: 22px;
-                height: 22px;
                 transform: translateY(-50%);
-                background-size: contain;
-                background-repeat: no-repeat;
+                display: flex;
+                align-items: center;
+                gap: 4px;
                 pointer-events: none;
                 z-index: 10;
             }
+            .rces-pos-left { left: 8px; flex-direction: row; }
+            .rces-pos-right { right: 8px; flex-direction: row-reverse; }
+            .rces-org-icon {
+                width: 22px;
+                height: 22px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                display: inline-block;
+            }
             .rces-cl-cardgardens-icon { background-image: url('${gardener_icon_base64}'); }
             .rces-cl-cardtel-icon { background-image: url('${cardtel_icon_base64}'); }
-            .rces-cl-cardgardens-cell-left > .rces-cl-cardgardens-icon { left: 8px; }
-            .rces-cl-cardgardens-cell-right > .rces-cl-cardgardens-icon { right: 8px; }
-            .rces-cl-cardtel-cell-left > .rces-cl-cardtel-icon { left: 32px; }
-            .rces-cl-cardtel-cell-right > .rces-cl-cardtel-icon { right: 32px; }
         `);
     }
 })();
