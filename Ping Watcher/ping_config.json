@@ -1,0 +1,12 @@
+{
+  "nation_name": "",
+  "discord_webhook_url": "",
+  
+  "poll_interval_seconds": 3600,
+  "max_requests_per_window": 45,
+  "ratelimit_window_seconds": 30,
+  "ratelimit_remaining_threshold": 15,
+  "ratelimit_backoff_seconds": 60,
+
+  "users_sheet_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vThf2cwCdk9k_NaKIlyu1cU_JDpWcEhdo-f8FqvvABiE2tpB7c9Ifbj7Ufb13XBt4t4E89ySQYzcGKm/pub?gid=0&single=true&output=tsv"
+}
