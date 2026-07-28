@@ -9,6 +9,7 @@
 // @noframes
 // @match        https://www.nationstates.net/*page=deck*/*card=*
 // @match        https://www.nationstates.net/*card=*/*page=deck*
+// @downloadURL  https://github.com/Zeuspa/NS-Cards/blob/main/Gardener%20%26%20Cardtel%20Highlighter%20(New%20Logo).js
 // @grant        GM.xmlHttpRequest
 // @grant        GM.setValue
 // @grant        GM.getValue
