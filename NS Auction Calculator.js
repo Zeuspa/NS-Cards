@@ -6,6 +6,7 @@
 // @description  A side table that lists current matches on an NS card page, netted to each account's main nation if the Main Auction Displayer script is present.
 // @match        https://www.nationstates.net/*/page=deck/*
 // @match        https://www.nationstates.net/page=deck/*
+// @downloadURL  
 // @grant        none
 // ==/UserScript==
 
