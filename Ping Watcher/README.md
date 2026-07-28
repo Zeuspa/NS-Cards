@@ -14,7 +14,7 @@ bids and posts it in Discord.
 3. Double-click `run_card_ping_watcher.bat` (Windows) or from a terminal:
    `python ns_card_ping_watcher.py`
 
-By default it runs one check and exits. Use `--watch` for continuous
+By default it runs one check and exits. Use `--watch` at the end for continuous
 polling (uses `poll_interval_seconds` as the minimum gap between checks).
 
 ## Flags - Runtime Arguments
