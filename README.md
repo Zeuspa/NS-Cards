@@ -8,4 +8,5 @@ Auction Calculator: Simple script for big auctions when you don't want to do the
 Steak Rarities (Modified): Makes legendary cards have a rainbow gradient, glow, and have a shine for all seasons. Disables all cards with GIFs for faster loading times.
 
 **Python Tools**
+
 Ping Watcher: Configured to track Cardtel members' legendary cards without bids, setup discord webhook to post in a channel and ping respective backers.  
