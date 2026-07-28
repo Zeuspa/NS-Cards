@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Gardener & Cardtel Highlighter (Old Logo)
+// @name         Gardener & Cardtel Highlighter (New Logo)
 // @version      1.3
 // @namespace    dithpri.RCES
 // @description  Adds The Card Gardening Society's and The Cardtel's icons besides members during auctions, with main-nation support & clean alignment.
