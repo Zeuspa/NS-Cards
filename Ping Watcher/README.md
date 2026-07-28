@@ -1,6 +1,6 @@
 # NationStates Card Ping Watcher
 
-Watches every Cardtel member's assigned NationStates Trading Cards for missing
+Watches every Cardtel member's assigned NationStates Trading Card(s) for missing
 bids and posts it in Discord.
 
 ## Setup
