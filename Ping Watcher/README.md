@@ -11,7 +11,7 @@ bids and posts it in Discord.
    - `nation_name`: tells nationstates' API the user running the script 
    - `discord_webhook_url`: from your Discord channel's webhook
    
-3. Double-click `run_card_ping_watcher.bat` (Windows), or from a terminal:
+3. Double-click `run_card_ping_watcher.bat` (Windows) or from a terminal:
    `python ns_card_ping_watcher.py`
 
 By default it runs one check and exits. Use `--watch` for continuous
