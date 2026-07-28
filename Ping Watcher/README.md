@@ -9,7 +9,7 @@ bids and posts it in Discord.
 
 2. Update "ping_config.json" and fill in:
    - `nation_name`: tells nationstates' API the user running the script 
-   - `discord_webhook_url`: from your Discord channel's webhook
+   - `discord_webhook_url`: Discord channel's webhook
    
 3. Double-click `run_card_ping_watcher.bat` (Windows) or from a terminal:
    `python ns_card_ping_watcher.py`
