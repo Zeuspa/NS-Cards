@@ -5,7 +5,7 @@ bids and posts it in Discord.
 
 ## Setup
 
-1. Install NS API requirements with running `pip install requests`
+1. Install NS API requirements by running `pip install requests`
 
 2. Update "ping_config.json" and fill in:
    - `nation_name`: tells nationstates' API the user running the script 
