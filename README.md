@@ -1,6 +1,8 @@
 # NS-Cards
 Simple scripts for nationstates.net cards
 
+
+**JavaScript UserScripts**
 Virtually all of the groundwork has been done by Racoda for these user scripts, these are just my custom modifications and maintenance updates.
 
 Gardener & Cardtel Highlighter: Adds The Card Gardening Society and The Cardtel icons besides members and their puppets during auctions, works with main displayer script.
