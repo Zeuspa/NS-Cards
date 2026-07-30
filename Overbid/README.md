@@ -25,10 +25,10 @@ You can use `--watch` for continuous polling instead.
 
 ## Flags - Runtime arguments
 
-- `--watch` — run continuously instead of a single sweep (uses
+- `--watch` run continuously instead of a single sweep (uses
   `poll_interval_seconds` as the minimum gap between sweeps)
-- `--debug-raw` — print the raw XML the API returns for every request,
+- `--debug-raw` print the raw XML the API returns for every request,
   useful if a result looks wrong and you want to see exactly what the
   server sent
-- `--show-ratelimit` — print live rate-limit numbers as they come back
+- `--show-ratelimit` print live rate-limit numbers as they come back
   from the server, so you can watch the actual pacing in real time
