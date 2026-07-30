@@ -8,8 +8,8 @@
 
 ## Setup and usage
 
-1. run `pip install requests`
-2. edit `config.json` and fill in:
+1. Run `pip install requests`
+2. Edit `config.json` and fill in:
    - `nation_name`: identify yourself for the API
    - `check_nation`: the nation you want to check
    - `html_report_path`: where to write the report (default `overbid_report.html`)
