@@ -16,3 +16,5 @@ Steak Rarities (Modified): Makes legendary cards have a rainbow gradient, glow, 
 **Python Tools**
 
 Ping Watcher: Configured to track Cardtel members' legendary cards without bids, setup discord webhook to post in a channel and ping respective backers.  
+
+Overbid: Check what cards you are currently being overbid on, useful for large collections when you have thousands of bids, outputs to an HTML file.
