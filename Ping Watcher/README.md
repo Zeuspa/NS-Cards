@@ -19,6 +19,6 @@ polling (uses `poll_interval_seconds` as the minimum gap between checks).
 
 ## Flags - Runtime Arguments
 
-- `--watch` — run continuously instead of a single check
-- `--debug-raw` — print the raw XML the API returns for each card
-- `--show-ratelimit` — print live rate-limit numbers from the server
+- `--watch` run continuously instead of a single check
+- `--debug-raw` print the raw XML the API returns for each card
+- `--show-ratelimit` print live rate-limit numbers from the server
