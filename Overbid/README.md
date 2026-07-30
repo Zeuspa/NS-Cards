@@ -1,7 +1,9 @@
 # NationStates Bid Watcher
 
 Checks your NationStates Trading Card bids
+
 Writes an HTML report of everything you're outbid on
+
 Navigate links using "enter" to each card's market page
 
 ## Setup and usage
