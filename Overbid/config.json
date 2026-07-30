@@ -1,0 +1,14 @@
+{
+  "//": "After 'nation_name' add your nation to identify yourself for NationStates.net",
+  "///": "After 'check_nation' add the nation you want to check",
+  
+  "nation_name": "",
+  "check_nation": "",
+  
+  "html_report_path": "overbid_report.html",
+  
+  "max_requests_per_window": 50,
+  "ratelimit_window_seconds": 30,
+  "ratelimit_remaining_threshold": 10,
+  "ratelimit_backoff_seconds": 30
+}
