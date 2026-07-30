@@ -23,8 +23,8 @@ AUTHOR_CONTACT = "zeuspa40@gmail.com"
 AUTHOR_NATION = "Laudesia"
 
 class SlidingWindowPacer:
-    def __init__(self, max_requests=45, window_seconds=30, verbose=False,
-                 remaining_threshold=15, backoff_seconds=30):
+    def __init__(self, max_requests=40, window_seconds=30, verbose=False,
+                 remaining_threshold=15, backoff_seconds=60):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.verbose = verbose
