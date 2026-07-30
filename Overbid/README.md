@@ -13,7 +13,9 @@
    - `nation_name`: identify yourself for the API
    - `check_nation`: the nation you want to check
    - `html_report_path`: where to write the report (default `overbid_report.html`)
-   *Avoid Touching other rate limiting Settings - Unless you know what you are doing*
+     
+*Avoid Touching other rate limiting Settings - Unless you know what you are doing*
+
 3. Double click `run_bid_watcher.bat` (Windows).
    Or from a terminal: `python ns_bid_watcher.py`
 4. Open `overbid_report.html` in a browser.
