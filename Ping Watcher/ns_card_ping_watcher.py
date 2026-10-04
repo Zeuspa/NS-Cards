@@ -31,8 +31,14 @@ CARD_URL_RE = re.compile(r"card=(\d+)/season=(\d+)")
 
 
 class SlidingWindowPacer:
-    def __init__(self, max_requests=45, window_seconds=30, verbose=False,
-                 remaining_threshold=15, backoff_seconds=60):
+    def __init__(
+        self,
+        max_requests=45,
+        window_seconds=30,
+        verbose=False,
+        remaining_threshold=15,
+        backoff_seconds=60,
+    ):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.verbose = verbose
@@ -41,7 +47,6 @@ class SlidingWindowPacer:
         self.backoff_seconds = backoff_seconds
 
     def wait(self):
-        """Block until a request slot is free in the sliding window."""
         while True:
             now = time.monotonic()
             while self._timestamps and now - self._timestamps[0] >= self.window_seconds:
@@ -50,16 +55,20 @@ class SlidingWindowPacer:
                 break
             sleep_for = self.window_seconds - (now - self._timestamps[0]) + 0.05
             if sleep_for > 0:
-                print(f"[ratelimit] pausing {sleep_for:.1f}s "
-                      f"({self.max_requests}/{self.window_seconds}s reached)")
+                print(
+                    f"[ratelimit] pausing {sleep_for:.1f}s "
+                    f"({self.max_requests}/{self.window_seconds}s reached)"
+                )
                 time.sleep(sleep_for)
         self._timestamps.append(time.monotonic())
 
     def update(self, headers):
         remaining_raw = headers.get("RateLimit-Remaining")
         if self.verbose:
-            print(f"[ratelimit] server {remaining_raw}/{headers.get('RateLimit-Limit')}, "
-                  f"resets {headers.get('RateLimit-Reset')}s")
+            print(
+                f"[ratelimit] server {remaining_raw}/{headers.get('RateLimit-Limit')}, "
+                f"resets {headers.get('RateLimit-Reset')}s"
+            )
         if remaining_raw is None:
             return
         try:
@@ -67,8 +76,10 @@ class SlidingWindowPacer:
         except ValueError:
             return
         if remaining < self.remaining_threshold:
-            print(f"[ratelimit] server reports only {remaining} requests left on this IP "
-                  f"(likely other traffic sharing it) — pausing {self.backoff_seconds}s")
+            print(
+                f"[ratelimit] server reports only {remaining} requests left on this IP "
+                f"(likely other traffic sharing it) — pausing {self.backoff_seconds}s"
+            )
             time.sleep(self.backoff_seconds)
 
 
@@ -100,7 +111,9 @@ def api_get(params, user_agent, retries=3):
             print("[error] 403 — check your nation_name in ping_config.json")
             return None
         if resp.status_code == 404:
-            print(f"[error] 404 — card not found ({params.get('cardid')}/{params.get('season')})")
+            print(
+                f"[error] 404 — card not found ({params.get('cardid')}/{params.get('season')})"
+            )
             return None
         if resp.status_code != 200:
             print(f"[error] status {resp.status_code}: {resp.text[:200]}")
@@ -212,7 +225,7 @@ def looks_like_valid_discord_id(val):
     return val.isdigit() and 17 <= len(val) <= 20
 
 
-OPT_IN_HEADERS = ("opt_in", "opt in", "opted_in", "opted in", "ping me", "opt-in")
+OPT_IN_HEADERS = ("opt_in", "opt in")
 
 
 def load_users(config, debug_raw=False):
@@ -227,15 +240,23 @@ def load_users(config, debug_raw=False):
         nation = _first_by_header(headers, row, "nation")
         discord_username = _first_by_header(headers, row, "discord", "discord username")
         discord_id = _first_by_header(headers, row, "discord id", "discord_id", "id")
-        display_name = _first_by_header(headers, row, "name", "username") or discord_username or nation
+        display_name = (
+            _first_by_header(headers, row, "name", "username")
+            or discord_username
+            or nation
+        )
         if not (nation and discord_id):
             continue
         if not looks_like_valid_discord_id(discord_id):
-            print(f"[warn] skipping {display_name or nation}: Discord ID '{discord_id}' doesn't look valid "
-                  f"(expected a 17-20 digit number — check the sheet column isn't formatted as Number)")
+            print(
+                f"[warn] skipping {display_name or nation}: Discord ID '{discord_id}' doesn't look valid "
+                f"(expected a 17-20 digit number — check the sheet column isn't formatted as Number)"
+            )
             continue
 
-        card_urls = _all_by_header_contains(headers, row, "backing card", "additional backing")
+        card_urls = _all_by_header_contains(
+            headers, row, "backing card", "additional backing"
+        )
         assigned = []
         seen = set()
         for u in card_urls:
@@ -244,20 +265,28 @@ def load_users(config, debug_raw=False):
                 seen.add((c["cardid"], c["season"]))
                 assigned.append(c)
 
-        opt_in = _truthy(_first_by_header(headers, row, *OPT_IN_HEADERS)) if has_opt_in_column else False
+        opt_in = (
+            _truthy(_first_by_header(headers, row, *OPT_IN_HEADERS))
+            if has_opt_in_column
+            else False
+        )
 
-        users.append({
-            "name": display_name,
-            "discord_id": discord_id,
-            "nation": nation,
-            "opt_in": opt_in,
-            "assigned_cards": assigned,
-        })
+        users.append(
+            {
+                "name": display_name,
+                "discord_id": discord_id,
+                "nation": nation,
+                "opt_in": opt_in,
+                "assigned_cards": assigned,
+            }
+        )
     if debug_raw:
         print(f"[debug] users from sheet ({len(users)} row(s)):")
         for u in users:
-            print(f"  {u['name']} (nation={u['nation']}, discord_id={u['discord_id']}, "
-                  f"opt_in={u['opt_in']}, assigned_cards={u['assigned_cards']})")
+            print(
+                f"  {u['name']} (nation={u['nation']}, discord_id={u['discord_id']}, "
+                f"opt_in={u['opt_in']}, assigned_cards={u['assigned_cards']})"
+            )
     return users
 
 
@@ -329,23 +358,29 @@ def send_discord_ping(webhook_url, user, missing_cards, ping=True):
         if trade:
             last_sale = f"Last sold by `{trade['seller']}` for **{trade['price']:.2f}** to `{trade['buyer']}`"
         elif c.get("market_value") is not None:
-            last_sale = f"est. market value **{c['market_value']:.2f}** bank (no trade history)"
+            last_sale = (
+                f"est. market value **{c['market_value']:.2f}** bank (no trade history)"
+            )
         else:
             last_sale = "no sale data available"
         lines.append(f"- [{name}]({url}) (S{c['season']}) — {last_sale}")
     payload = {
         "content": f"<@{user['discord_id']}>" if ping else "",
-        "embeds": [{
-            "title": f"{user['name']} — no bid on {len(missing_cards)} card(s)",
-            "description": "\n".join(lines)[:4000],  # Discord embed description limit is 4096
-            "color": 0x5865F2,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-        }],
+        "embeds": [
+            {
+                "title": f"{user['name']} — no bid on {len(missing_cards)} card(s)",
+                "description": "\n".join(lines)[:4000],
+                "color": 0x5865F2,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        ],
     }
     try:
         resp = requests.post(webhook_url, json=payload, timeout=10)
         if resp.status_code >= 300:
-            print(f"[error] discord webhook returned {resp.status_code}: {resp.text[:200]}")
+            print(
+                f"[error] discord webhook returned {resp.status_code}: {resp.text[:200]}"
+            )
             return False
         return True
     except requests.RequestException as e:
@@ -387,19 +422,25 @@ def run_check(config, state, debug_raw=False):
 
     global_keys = {(c["cardid"], c["season"]) for c in global_cards}
     for u in users:
-        u["_required"] = {(c["cardid"], c["season"]) for c in u.get("assigned_cards", [])} | global_keys
+        u["_required"] = {
+            (c["cardid"], c["season"]) for c in u.get("assigned_cards", [])
+        } | global_keys
 
     unique_cards = sorted(global_keys.union(*(u["_required"] for u in users)))
     if not unique_cards:
         print(f"[{now_str()}] no cards to check for any member")
         return
 
-    print(f"[{now_str()}] checking {len(unique_cards)} unique card(s) "
-          f"for {len(users)} member(s)...")
+    print(
+        f"[{now_str()}] checking {len(unique_cards)} unique card(s) "
+        f"for {len(users)} member(s)..."
+    )
 
     bundles = {}
     for i, (cardid, season) in enumerate(unique_cards, start=1):
-        print(f"  [{i}/{len(unique_cards)}] {cardid} (S{season})...", end="", flush=True)
+        print(
+            f"  [{i}/{len(unique_cards)}] {cardid} (S{season})...", end="", flush=True
+        )
         bundle = get_card_bundle(cardid, season, user_agent, api_version, debug_raw)
         bundles[(cardid, season)] = bundle
         if bundle is None:
@@ -416,7 +457,6 @@ def run_check(config, state, debug_raw=False):
             cardid, season = key
             bundle = bundles.get(key)
             if bundle is None:
-                # API failure: don't treat as "no bid" or we'd send false pings.
                 continue
             has_bid = norm_nation in bundle["bidding_nations"]
             state_key = f"{cardid}:{season}:{user['discord_id']}"
@@ -427,19 +467,20 @@ def run_check(config, state, debug_raw=False):
                 continue
             if not already_pinged:
                 pending_keys.append(state_key)
-                missing.append({
-                    "cardid": cardid,
-                    "season": season,
-                    "name": bundle.get("name"),
-                    "latest_trade": bundle.get("latest_trade"),
-                    "market_value": bundle.get("market_value"),
-                })
+                missing.append(
+                    {
+                        "cardid": cardid,
+                        "season": season,
+                        "name": bundle.get("name"),
+                        "latest_trade": bundle.get("latest_trade"),
+                        "market_value": bundle.get("market_value"),
+                    }
+                )
 
         if missing:
             ping = bool(user.get("opt_in"))
             verb = "pinging" if ping else "posting (not opted in, no ping)"
             print(f"  {user['name']}: {verb} for {len(missing)} missing bid(s)")
-            # Only remember these as "already pinged" if Discord actually accepted the post.
             if send_discord_ping(webhook_url, user, missing, ping=ping):
                 for k in pending_keys:
                     state[k] = True
@@ -451,27 +492,43 @@ def main():
     parser = argparse.ArgumentParser(
         description="Checks tracked NationStates cards for missing bids and posts to Discord."
     )
-    parser.add_argument("--watch", action="store_true",
-                        help="Run continuously instead of a single check (uses poll_interval_seconds).")
-    parser.add_argument("--debug-raw", action="store_true",
-                        help="Print raw API responses -- use this if names/prices look wrong.")
-    parser.add_argument("--show-ratelimit", action="store_true",
-                        help="Print live API rate-limit status on every request.")
-    parser.add_argument("--config", default=CONFIG_FILE,
-                        help="Path to config file (default: ping_config.json next to this script).")
+    parser.add_argument(
+        "--watch",
+        action="store_true",
+        help="Run continuously instead of a single check (uses poll_interval_seconds).",
+    )
+    parser.add_argument(
+        "--debug-raw",
+        action="store_true",
+        help="Print raw API responses -- use this if names/prices look wrong.",
+    )
+    parser.add_argument(
+        "--show-ratelimit",
+        action="store_true",
+        help="Print live API rate-limit status on every request.",
+    )
+    parser.add_argument(
+        "--config",
+        default=CONFIG_FILE,
+        help="Path to config file (default: ping_config.json next to this script).",
+    )
     args = parser.parse_args()
 
     if not os.path.exists(args.config):
-        print(f"[error] config not found: {args.config}\n"
-              f"copy ping_config.example.json to ping_config.json and fill it in")
+        print(
+            f"[error] config not found: {args.config}\n"
+            f"copy ping_config.example.json to ping_config.json and fill it in"
+        )
         sys.exit(1)
 
     with open(args.config, "r") as f:
         try:
             config = json.load(f)
         except json.JSONDecodeError as e:
-            print(f"[error] {args.config} isn't valid JSON: {e}\n"
-                  f"Check for a missing comma or quote near line {e.lineno}.")
+            print(
+                f"[error] {args.config} isn't valid JSON: {e}\n"
+                f"Check for a missing comma or quote near line {e.lineno}."
+            )
             sys.exit(1)
 
     missing = [k for k in ("nation_name", "discord_webhook_url") if not config.get(k)]
@@ -506,8 +563,10 @@ def main():
             remaining = min_gap - (time.monotonic() - start)
             if remaining > 0:
                 next_check = datetime.now() + timedelta(seconds=remaining)
-                print(f"Next check at {next_check:%Y-%m-%d %H:%M:%S} "
-                      f"(sleeping {remaining:.0f} seconds)")
+                print(
+                    f"Next check at {next_check:%Y-%m-%d %H:%M:%S} "
+                    f"(sleeping {remaining:.0f} seconds)"
+                )
                 time.sleep(remaining)
     except KeyboardInterrupt:
         print("\nstopped.")
